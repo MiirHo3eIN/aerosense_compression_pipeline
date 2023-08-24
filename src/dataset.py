@@ -290,7 +290,7 @@ def TimeseriesSampledCpWithLabels(folder_path, experiments: list, samples: int, 
                    
         # tensor = sampler(shaper(tensors[i]))
         tensor = shaper(tensors[i])
-        labels += [Damage_Classes.ex2label(experiments[i])]*samples
+        labels += [Damage_Classes.ex2label(experiments[i])]*tensor.shape[0]
 
         if t is None:
             t = tensor 

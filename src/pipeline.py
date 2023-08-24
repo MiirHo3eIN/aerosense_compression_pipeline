@@ -35,19 +35,23 @@ precision_results = {
 
 def data_logger(model_config, ridge_acc, rfc_acc, ridge_pre, rfc_pre): 
 
-    clasification_accuracy["model_id"].append(model_config.model_id)
-    clasification_accuracy["arch_id"].append(model_config.arch_id)
-    clasification_accuracy["ridge"].append(ridge_acc)
-    clasification_accuracy["rfc"].append(rfc_acc)
+    clasification_accuracy["model_id"] =   (model_config.model_id)
+    clasification_accuracy["arch_id"]  = (model_config.arch_id)
+    clasification_accuracy["ridge"]  = (ridge_acc)
+    clasification_accuracy["rfc"]  = (rfc_acc)
 
-    precision_results["model_id"].append(model_config.model_id)
-    precision_results["arch_id"].append(model_config.arch_id)
-    precision_results["ridge"].append(ridge_pre)
-    precision_results["rfc"].append(rfc_pre)
+    precision_results["model_id"]  = (model_config.model_id)
+    precision_results["arch_id"] = (model_config.arch_id)
+    precision_results["ridge"] = (ridge_pre)
+    precision_results["rfc"] = (rfc_pre)
+
+    print(f"Ridge Accuracy: {ridge_acc} \t RFC Accuracy: {rfc_acc}")
+    print("-+-"*15)
 
     utils.write_to_csv(clasification_accuracy, "classification_accuracy")
     utils.write_to_csv(precision_results, "precision_results")
 
+    print(f"Results saved for {model_config.model_id}")
 
 
 
@@ -55,26 +59,23 @@ def main(dataset_config, model_config):
     
     # Import the Cp data with the labels
     
-    train  = dataset.TimeseriesSampledCpWithLabels(dataset_config.path, dataset_config.train_exp, 20, dataset_config.seq_len)
-    test  = dataset.TimeseriesSampledCpWithLabels(dataset_config.path, dataset_config.test_exp, 20, dataset_config.seq_len)
+    train , y_train = dataset.TimeseriesSampledCpWithLabels(dataset_config.path, dataset_config.train_exp, 20, dataset_config.seq_len)
+    test , y_test = dataset.TimeseriesSampledCpWithLabels(dataset_config.path, dataset_config.test_exp, 20, dataset_config.seq_len)
 
     # Compress the data using the choosen compression method
 
-    train_reconstructed, test_reconstructed = utils.data_compression(model_config, train[0], test[0])
-    train_y = train[1]
-    test_y = test[1]
+    train_reconstructed, test_reconstructed = utils.data_compression(model_config, train , test )
     del train, test
 
-
+    print(train_reconstructed.shape, y_train.shape)
     # Extract the sensitive features from the compressed data deploying the MiniRocket algorithm
     train_features, test_features = utils.rocket_feature_extraction(train_rocket = train_reconstructed, test_rocket = test_reconstructed)
     del train_reconstructed, test_reconstructed
 
     # Classification Results on the compressed data
-    train_features = (train_features, train_y) 
-    test_features = (test_features, test_y) 
-    ridge_c_matrix, ridge_acc, ridge_pre = utils.ridge_classifier(train_features, test_features)
-    rfc_c_matrix, rfc_acc, rfc_pre = utils.random_forest_classifier(train_features, test_features)
+    print(train_features.shape, y_train.shape)
+    ridge_c_matrix, ridge_acc, ridge_pre = utils.ridge_classifier(train_features, y_train, test_features, y_test)
+    rfc_c_matrix, rfc_acc, rfc_pre = utils.random_forest_classifier(train_features, y_train, test_features, y_test)
 
     # Save the results in a csv file 
     data_logger(model_config, ridge_acc, rfc_acc, ridge_pre, rfc_pre)
@@ -104,4 +105,3 @@ if __name__ == "__main__":
         
         main(dataset_config , model_config)
 
-        exit()

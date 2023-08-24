@@ -39,10 +39,11 @@ def rocket_feature_extraction(train_rocket, test_rocket):
     return X_train_transform, X_test_transform
 
 
-def ridge_classifier(train_features, test_features): 
+def ridge_classifier(train_features, y_train, test_features, y_test): 
 
-    X_train_transform, y_train = train_features
-    X_test_transform, y_test = test_features
+    X_train_transform = train_features
+    X_test_transform  = test_features
+
 
     ridge_clf = RidgeClassifierCV(alphas=np.logspace(-8, 8, 17) ) 
     ridge_clf.fit(X_train_transform, y_train)
@@ -54,10 +55,10 @@ def ridge_classifier(train_features, test_features):
 
     return ridge_c_matrix, ridge_acc, ridge_pre
 
-def random_forest_classifier(train_features, test_features): 
+def random_forest_classifier(train_features, y_train, test_features, y_test): 
 
-    X_train_transform, y_train = train_features
-    X_test_transform, y_test = test_features
+    X_train_transform = train_features
+    X_test_transform  = test_features
 
     rfc = RandomForestClassifier(n_estimators=800, max_features="sqrt")
     rfc.fit(X_train_transform, y_train)
@@ -81,7 +82,6 @@ def torch_eval(model,x_input: torch.Tensor) -> torch.Tensor:
 def data_compression(model_configs, train_x, test_x): 
     # Call the model to compress the data 
 
-    arch_id = model_configs.arch_id
     model = ae_model.Model(model_configs.arch_id)
     
     model_id = model_configs.model_id
@@ -90,7 +90,7 @@ def data_compression(model_configs, train_x, test_x):
     reconstructed_train = torch_eval(model, train_x)
     reconstructed_test = torch_eval(model, test_x)
 
-    return reconstructed_train, reconstructed_test
+    return reconstructed_train , reconstructed_test 
 
 
 def _is_file_exist(file_name: str) -> bool:
@@ -99,9 +99,9 @@ def _is_file_exist(file_name: str) -> bool:
 def write_to_csv(data: dict, file_name: str) -> None: 
     write_dir = f"../{file_name}.csv"
     if (_is_file_exist(write_dir)): 
-        _append_to_csv(data)
+        _append_to_csv(data, file_name)
     else: 
-        _create_csv(data)
+        _create_csv(data, file_name)
 
 def _append_to_csv(data: dict, file_name: str) -> None:
     

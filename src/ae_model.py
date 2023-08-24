@@ -860,9 +860,10 @@ arch = {'a61c': AE_a61c, # CNN with residual stuff
     # AE3c38 = ["D9F2:0A27:942A:1DA0"]
     # AE4f90 = ["4E09:4C41:54E0:9BF9"]
     # AE942A = ["372D:4517:E7D3:34E9"]
-def Model(arch_id):
-    # Does not work for simple linear model. 
+def Model(arch_id, d_input = 200, d_latent= 25): 
     print(f"Model({arch_id})")
+    if arch_id == "6424": 
+        return arch[arch_id](d_input, d_latent)
     return arch[arch_id]()
 
 
