@@ -13,6 +13,16 @@ from sklearn.metrics import accuracy_score, precision_score
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 
+# Import Torch 
+import torch
+import torch.nn as nn
+
+# Custom imports 
+import ae_model 
+
+import configs 
+from configs import Model_configs
+
 
 def rocket_feature_extraction(train_rocket, test_rocket): 
 
@@ -55,3 +65,19 @@ def random_forest_classifier(train_features, test_features):
     return rfc_c_matrix, rfc_acc, rfc_pre
 
 
+def torch_eval(model,x_input: torch.Tensor) -> torch.Tensor:
+
+    with torch.no_grad():
+        model.eval() 
+        x_hat = model(x_input.float())
+    return x_hat
+
+def data_compression(model_configs, train_x, test_x): 
+    # Call the model to compress the data 
+    model = ae_model.Model(model_configs.arch_id)
+    model.load_state_dict(torch.load(model_configs.path_models))  
+
+    reconstructed_train = torch_eval(model, train_x)
+    reconstructed_test = torch_eval(model, test_x)
+
+    return reconstructed_train, reconstructed_test

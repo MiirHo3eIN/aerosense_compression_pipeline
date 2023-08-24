@@ -841,7 +841,7 @@ class AE_cae4(nn.Module):
 
 arch = {'a61c': AE_a61c, # CNN with residual stuff
         '8c49': AE_8c49, # Tiny CNN with residual stuff
-        '6424': AE_6424, # simple linear
+        '6424': AE_6424, # simple linear 
         '3c38': AE_3c83, # simple CNN depth = 1 - reduces chan
         '4f90': AE_4f90, # simple CNN depth = 2 - reduces chan
         '942a': AE_942a, # simple CNN depth = 3 - reduces chan
@@ -861,18 +861,19 @@ arch = {'a61c': AE_a61c, # CNN with residual stuff
     # AE4f90 = ["4E09:4C41:54E0:9BF9"]
     # AE942A = ["372D:4517:E7D3:34E9"]
 def Model(arch_id):
+    # Does not work for simple linear model. 
     print(f"Model({arch_id})")
     return arch[arch_id]()
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-    input_x = torch.randn(10, 36, 200).to(device)
+#     input_x = torch.randn(10, 36, 200).to(device)
 
-    print(f"Input: {input_x.shape}")
-    dut = Model('bded')
-    summary(dut, input_size = input_x.shape)
-    output = dut(input_x)
+#     print(f"Input: {input_x.shape}")
+#     dut = Model('bded')
+#     summary(dut, input_size = input_x.shape)
+#     output = dut(input_x)
 
-    print(f"Outputto: {output.shape}")
+#     print(f"Outputto: {output.shape}")
 
