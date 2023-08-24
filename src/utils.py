@@ -23,6 +23,11 @@ import ae_model
 import configs 
 from configs import Model_configs
 
+# To save the trained model
+from csv import DictWriter
+
+
+import os
 
 def rocket_feature_extraction(train_rocket, test_rocket): 
 
@@ -65,6 +70,7 @@ def random_forest_classifier(train_features, test_features):
     return rfc_c_matrix, rfc_acc, rfc_pre
 
 
+# These two should be merged into a Class 
 def torch_eval(model,x_input: torch.Tensor) -> torch.Tensor:
 
     with torch.no_grad():
@@ -74,10 +80,45 @@ def torch_eval(model,x_input: torch.Tensor) -> torch.Tensor:
 
 def data_compression(model_configs, train_x, test_x): 
     # Call the model to compress the data 
+
+    arch_id = model_configs.arch_id
     model = ae_model.Model(model_configs.arch_id)
+    
+    model_id = model_configs.model_id
     model.load_state_dict(torch.load(model_configs.path_models))  
 
     reconstructed_train = torch_eval(model, train_x)
     reconstructed_test = torch_eval(model, test_x)
 
     return reconstructed_train, reconstructed_test
+
+
+def _is_file_exist(file_name: str) -> bool:
+    return os.path.isfile(file_name)
+
+def write_to_csv(data: dict, file_name: str) -> None: 
+    write_dir = f"../{file_name}.csv"
+    if (_is_file_exist(write_dir)): 
+        _append_to_csv(data)
+    else: 
+        _create_csv(data)
+
+def _append_to_csv(data: dict, file_name: str) -> None:
+    
+    print("Appending to the pipeline results csv file")
+    print("++"*15)
+    with open(f"../{file_name}.csv", "a") as FS:
+        
+        headers = list(data.keys())
+
+        csv_dict_writer = DictWriter(FS, fieldnames = headers) 
+
+        csv_dict_writer.writerow(data)
+
+        FS.close()
+
+
+def _create_csv(data: dict, file_name: str) -> None:
+    df = pd.DataFrame.from_dict(data, orient = "index").T.to_csv(f"../{file_name}.csv", header = True, index = False)
+    print("Created the csv file is as follows:")
+    print(df)

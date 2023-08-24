@@ -14,5 +14,6 @@ class Dataset_configs:
 @dataclass
 class Model_configs:
     path_models: str
+    model_id: str
     arch_id: str
-    
+    seq_len: int
