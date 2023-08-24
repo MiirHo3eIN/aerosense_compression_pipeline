@@ -103,3 +103,5 @@ if __name__ == "__main__":
         
         
         main(dataset_config , model_config)
+
+        exit()

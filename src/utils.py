@@ -44,7 +44,7 @@ def ridge_classifier(train_features, test_features):
     X_train_transform, y_train = train_features
     X_test_transform, y_test = test_features
 
-    ridge_clf = RidgeClassifierCV(alphas=np.logspace(-8, 8, 17), normalize=True)
+    ridge_clf = RidgeClassifierCV(alphas=np.logspace(-8, 8, 17) ) 
     ridge_clf.fit(X_train_transform, y_train)
     y_pred = ridge_clf.predict(X_test_transform)
 
@@ -85,7 +85,7 @@ def data_compression(model_configs, train_x, test_x):
     model = ae_model.Model(model_configs.arch_id)
     
     model_id = model_configs.model_id
-    model.load_state_dict(torch.load(model_configs.path_models))  
+    model.load_state_dict(torch.load(f"{model_configs.path_models}{model_id}.pt"))  
 
     reconstructed_train = torch_eval(model, train_x)
     reconstructed_test = torch_eval(model, test_x)
