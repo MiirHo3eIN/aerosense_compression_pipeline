@@ -48,8 +48,8 @@ def data_logger(model_config, ridge_acc, rfc_acc, ridge_pre, rfc_pre):
     print(f"Ridge Accuracy: {ridge_acc} \t RFC Accuracy: {rfc_acc}")
     print("-+-"*15)
 
-    utils.write_to_csv(clasification_accuracy, "classification_accuracy")
-    utils.write_to_csv(precision_results, "precision_results")
+    utils.write_to_csv(clasification_accuracy, "classification_accuracy_v1")
+    utils.write_to_csv(precision_results, "precision_results_v1")
 
     print(f"Results saved for {model_config.model_id}")
 
@@ -64,13 +64,13 @@ def main(dataset_config, model_config):
 
     # Compress the data using the choosen compression method
 
-    train_reconstructed, test_reconstructed = utils.data_compression(model_config, train , test )
-    del train, test
+    _ , test_reconstructed = utils.data_compression(model_config, train , test )
+    del test
 
-    print(train_reconstructed.shape, y_train.shape)
+    # print(train_reconstructed.shape, y_train.shape)
     # Extract the sensitive features from the compressed data deploying the MiniRocket algorithm
-    train_features, test_features = utils.rocket_feature_extraction(train_rocket = train_reconstructed, test_rocket = test_reconstructed)
-    del train_reconstructed, test_reconstructed
+    train_features, test_features = utils.rocket_feature_extraction(train_rocket = train, test_rocket = test_reconstructed)
+    del test_reconstructed
 
     # Classification Results on the compressed data
     print(train_features.shape, y_train.shape)
