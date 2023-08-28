@@ -83,7 +83,7 @@ def main(dataset_config, model_config):
 if __name__ == "__main__": 
     
     # Let's read all the avaiable trained models and run the pipeline for each of them  
-    models = pd.read_csv("../training_results.csv", usecols=["model_id", 'arch_id', "window_size"])
+    models = pd.read_csv("../models.csv", usecols=["model_id", 'arch_id', "window_size"])
 
     for _, row in models.iterrows():
         print("Processing")
@@ -97,7 +97,7 @@ if __name__ == "__main__":
         )
 
         dataset_config = Dataset_configs(
-        path = f"../data/AoA_0deg_Cp/",
+        path = f"../data/cp_data/AoA_0deg_Cp/",
         seq_len = row['window_size'],
         train_exp = [3,4,7,8,12,13,16,17,22,23,26,27,31,32,35,36,41,42,45,46,50,51,54,55,60,61,64,65,69,70,73,74,79,80,83,84,88,89,92,93,98,99,102,103,107,108,111,112],
         test_exp = [5,9,14,18,24,28,33,37,43,47,52,56,62,66,71,75,81,85,90,94,100,104,109,113])

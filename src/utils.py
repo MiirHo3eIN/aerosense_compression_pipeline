@@ -97,7 +97,7 @@ def _is_file_exist(file_name: str) -> bool:
     return os.path.isfile(file_name)
 
 def write_to_csv(data: dict, file_name: str) -> None: 
-    write_dir = f"../{file_name}.csv"
+    write_dir = f"../results/{file_name}.csv"
     if (_is_file_exist(write_dir)): 
         _append_to_csv(data, file_name)
     else: 
@@ -107,7 +107,7 @@ def _append_to_csv(data: dict, file_name: str) -> None:
     
     print("Appending to the pipeline results csv file")
     print("++"*15)
-    with open(f"../{file_name}.csv", "a") as FS:
+    with open(f"../results/{file_name}.csv", "a") as FS:
         
         headers = list(data.keys())
 
@@ -119,6 +119,6 @@ def _append_to_csv(data: dict, file_name: str) -> None:
 
 
 def _create_csv(data: dict, file_name: str) -> None:
-    df = pd.DataFrame.from_dict(data, orient = "index").T.to_csv(f"../{file_name}.csv", header = True, index = False)
+    df = pd.DataFrame.from_dict(data, orient = "index").T.to_csv(f"../results/{file_name}.csv", header = True, index = False)
     print("Created the csv file is as follows:")
     print(df)
