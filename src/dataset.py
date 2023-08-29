@@ -282,14 +282,14 @@ def TimeseriesSampledCpWithLabels(folder_path, experiments: list, samples: int, 
 
     tensors = TensorLoaderCp(folder_path, experiments)  
     shaper = Overlapper(seq_len=seq_len, stride=seq_len//2) 
-    # sampler = RandomSampler(samples)
+    sampler = RandomSampler(samples)
     
     t = None        
     labels = []
     for i in range(len(experiments)):
                    
-        # tensor = sampler(shaper(tensors[i]))
-        tensor = shaper(tensors[i])
+        tensor = sampler(shaper(tensors[i]))
+        # tensor = shaper(tensors[i])
         labels += [Damage_Classes.ex2label(experiments[i])]*tensor.shape[0]
 
         if t is None:
