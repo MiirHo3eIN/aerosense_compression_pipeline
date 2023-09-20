@@ -21,7 +21,7 @@ clasification_accuracy = {
     "ridge": [],
     "rfc": [],
 }
-
+ 
 precision_results = {
     
     "model_id": [],
